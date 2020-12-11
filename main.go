@@ -6,7 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	
+	"github.com/Itsmayank10/ContactTracingApi/helper"
+	"github.com/Itsmayank10/ContactTracingApi/models"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,7 +15,6 @@ import (
 
 //Connection mongoDB with helper class
 var collection = helper.ConnectDB()
-
 func getUser(w http.ResponseWriter, r *http.Request) {
 	// set header.
 	w.Header().Set("Content-Type", "application/json")
@@ -84,12 +84,14 @@ func main() {
 	r := mux.NewRouter()
 
   	// arrange our route
-	r.HandleFunc("/api/users/{id}", getUser).Methods("GET")
-	r.HandleFunc("/api/users", createUser).Methods("POST")
-	r.HandleFunc("/api/contacts", AddContact).Methods("POST")
+	r.HandleFunc("/users/{id}", getUser).Methods("GET")
+	r.HandleFunc("/users", createUser).Methods("POST")
+	r.HandleFunc("/contacts", AddContact).Methods("POST")
 	
 
   	// set our port address
-	log.Fatal(http.ListenAndServe(":8000", r))
+	config := helper.GetConfiguration()
+	log.Fatal(http.ListenAndServe(config.Port, r))
+
 
 }
